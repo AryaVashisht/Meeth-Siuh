@@ -1,0 +1,53 @@
+<map>
+  <entry>
+    <string>Undeploy</string>
+    <string>// This script executes once for each deploy, undeploy, or redeploy task
+// if at least one channel was undeployed
+// You only have access to the globalMap here to persist data
+return;</string>
+  </entry>
+  <entry>
+    <string>Postprocessor</string>
+    <string>// This script executes once after a message has been processed
+// This script applies across all channels
+// Responses returned from here will be stored as &quot;Postprocessor&quot; in the response map
+// You have access to &quot;response&quot;, if returned from the channel postprocessor
+return;</string>
+  </entry>
+  <entry>
+    <string>Deploy</string>
+    <string>// This script executes once for each deploy or redeploy task
+// You only have access to the globalMap here to persist data
+
+        try{
+        var systemVariables = java.lang.System.getenv();
+        globalMap.put(&quot;customerId&quot;, systemVariables.get(&quot;CUSTID&quot;) )
+        globalMap.put(&quot;custName&quot;,systemVariables.get(&apos;CUSTNAME&apos;) ? systemVariables.get(&apos;CUSTNAME&apos;).toUpperCase() : configurationMap.get(assigningAuthority))
+        globalMap.put(&quot;minervaUrl&quot;, systemVariables.get(&apos;PUBLIC_URL&apos;) ? &apos;https://&apos;+systemVariables.get(&apos;PUBLIC_URL&apos;)  : JSON.parse(configurationMap.get(&apos;apiInformation&apos;)).minervaUrl)
+        globalMap.put(&quot;mirthDBHostName&quot;,systemVariables.get(&apos;MIRTH_DB_HOSTNAME&apos;))
+        logger.info(&quot;SMTP Details &quot;)
+
+        globalMap.put(&quot;smtpHostname&quot;, systemVariables.get(&apos;SMTP_HOST&apos;)  ?  systemVariables.get(&apos;SMTP_HOST&apos;)  : configurationMap.get(&apos;smtpHostname&apos;) )
+        globalMap.put(&quot;smtpFromEmailId&quot;,systemVariables.get(&apos;SMTP_REPLYTO&apos;) ? systemVariables.get(&apos;SMTP_REPLYTO&apos;) : configurationMap.get(&apos;smtpFromEmailId&apos;)  )
+        globalMap.put(&quot;smtpUsername&quot;,systemVariables.get(&apos;SMTP_USER&apos;) ? systemVariables.get(&apos;SMTP_USER&apos;) : configurationMap.get(&apos;smtpUsername&apos;) )
+        globalMap.put(&quot;smtpPassword&quot;, configurationMap.get(&apos;smtpPassword&apos;) )
+        globalMap.put(&quot;smtpPort&quot;,systemVariables.get(&apos;SMTP_PORT&apos;) ? systemVariables.get(&apos;SMTP_PORT&apos;) : configurationMap.get(&apos;smtpPort&apos;))
+
+        globalMap.put(&quot;baseDirectoryPath&quot;, systemVariables.get(&quot;CUSTID&quot;) ? &quot;/opt/mphrx/&quot;+systemVariables.get(&quot;CUSTID&quot;)+&quot;/data/CsvForMirth&quot; : configurationMap.get(&apos;baseDirectoryPath&apos;) );
+        globalMap.put(&quot;hostname&quot;,java.lang.System.getenv(&apos;HOSTNAME&apos;))
+
+        logger.info(&quot;globalMap :  &quot;+globalMap)
+
+        }catch(e){
+        logger.error(&quot;Exception in Global Script : &quot;+e)
+
+      }
+return;</string>
+  </entry>
+  <entry>
+    <string>Preprocessor</string>
+    <string>// Modify the message variable below to pre process data
+// This script applies across all channels
+return message;</string>
+  </entry>
+</map>
